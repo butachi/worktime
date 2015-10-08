@@ -1,0 +1,16 @@
+{
+	"name": "modules/core",
+	"description": "",
+        
+	"authors": [
+		{
+			"name": "Project JH",
+			"email": "jh.labs@gmail.com"
+		}
+	],
+	"autoload": {
+		"psr-4": {
+			"Modules\\Core\\": ""
+		}
+	}
+}
