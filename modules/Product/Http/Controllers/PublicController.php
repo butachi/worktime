@@ -16,7 +16,7 @@ class PublicController extends BasePublicController
     private $app;
 
     public function __construct(ProductRepository $page, Application $app)
-    {
+    {        
         parent::__construct();
         $this->page = $page;
         $this->app = $app;
@@ -41,7 +41,7 @@ class PublicController extends BasePublicController
      * @return \Illuminate\View\View
      */
     public function homepage()
-    {
+    {        
         $page = $this->page->findHomepage();
 
         $this->throw404IfNotFound($page);

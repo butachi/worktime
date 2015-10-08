@@ -6,10 +6,11 @@
     "active": 1,
     "order": 0,
     "providers": [
+        "Modules\\User\\Providers\\RouteServiceProvider",
         "Modules\\User\\Providers\\UserServiceProvider"
     ],
     "aliases":{},
     "files": [
-        "start.php"
+        "composers.php"
     ]
 }

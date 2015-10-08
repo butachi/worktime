@@ -8,9 +8,11 @@
     "providers": [
         "Modules\\Core\\Providers\\CoreServiceProvider",
         "Dimsav\\Translatable\\TranslatableServiceProvider",        
+        "Laracasts\\Flash\\FlashServiceProvider",
         "Mcamara\\LaravelLocalization\\LaravelLocalizationServiceProvider"
     ],
     "aliases":{
+        "Flash": "Laracasts\\Flash\\Flash",
         "LaravelLocalization": "Mcamara\\LaravelLocalization\\Facades\\LaravelLocalization"
     },
     "files": [

@@ -27,7 +27,7 @@ class ProductServiceProvider extends ServiceProvider
     
     private function registerBindings()
     {
-        $this->app->bind(
+        $this->app->bind(                
             'Modules\Product\Repositories\ProductRepository',
             function () {
                 $repository = new EloquentProductRepository(new Product());

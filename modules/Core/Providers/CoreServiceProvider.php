@@ -1,4 +1,4 @@
-<?php namespace Modules\Core\Providers;
+<?php namespace modules\Core\Providers;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
@@ -74,7 +74,7 @@ class CoreServiceProvider extends ServiceProvider
     public function registerMiddleware(Router $router)
     {
         foreach ($this->middleware as $module => $middlewares) {
-            foreach ($middlewares as $name => $middleware) {                
+            foreach ($middlewares as $name => $middleware) {
                 $class = "Modules\\{$module}\\Http\\Middleware\\{$middleware}";
                 $router->middleware($name, $class);
             }
@@ -131,7 +131,6 @@ class CoreServiceProvider extends ServiceProvider
      */
     private function registerConfigNamespace(Module $module)
     {
-        
         $files = $this->app['files']->files($module->getPath() . '/Config');
         
         $package = $module->getName();
@@ -170,7 +169,7 @@ class CoreServiceProvider extends ServiceProvider
      * - laravel translatable
      */
     private function setLocalesConfigurations()
-    {        
+    {
         /*$localeConfig = $this->app['cache']
             ->tags('setting.settings', 'global')
             ->remember("asgard.locales", 120,

@@ -2,94 +2,109 @@
 
 use Illuminate\Support\ServiceProvider;
 
-class UserServiceProvider extends ServiceProvider {
+class UserServiceProvider extends ServiceProvider
+{
+    /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = false;
 
-	/**
-	 * Indicates if loading of the provider is deferred.
-	 *
-	 * @var bool
-	 */
-	protected $defer = false;
+    /**
+     * @var array
+     */
+    protected $middleware = [
+        'User' => [
+            'auth.guest' => 'GuestMiddleware',
+            'logged.in' => 'LoggedInMiddleware'
+        ],
+    ];
+    
+    /**
+     * @var array
+     */
+    protected $providers = [
+        'Sentinel' => 'Cartalyst\\Sentinel\\Laravel\\SentinelServiceProvider',
+        'Sentry'   => 'Cartalyst\\Sentry\\SentryServiceProvider',
+        'Usher'    => 'Maatwebsite\\Usher\\UsherServiceProvider'
+    ];
+    
+    /**
+     * Register the service provider.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->register(
+            $this->getUserPackageServiceProvider()
+        );
 
-	/**
-	 * Boot the application events.
-	 * 
-	 * @return void
-	 */
-	public function boot()
-	{
-		$this->registerConfig();
-		$this->registerTranslations();
-		$this->registerViews();
-	}
+        $this->registerBindings();
+    }
+    
+    /**
+     */
+    public function boot()
+    {
+        $this->registerMiddleware($this->app['router']);
 
-	/**
-	 * Register the service provider.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{		
-		//
-	}
+        $this->publishes([
+            __DIR__ . '/../Resources/views' => base_path('resources/views/jh/user'),
+        ]);
+        //$this->loadViewsFrom(base_path('resources/views/jh/user'), 'user');
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'user');
+    }
 
-	/**
-	 * Register config.
-	 * 
-	 * @return void
-	 */
-	protected function registerConfig()
-	{
-		$this->publishes([
-		    __DIR__.'/../Config/config.php' => config_path('user.php'),
-		]);
-		$this->mergeConfigFrom(
-		    __DIR__.'/../Config/config.php', 'user'
-		);
-	}
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return array();
+    }
+    
+    private function registerBindings()
+    {
+        $driver = config('jh.user.users.driver', 'Sentinel');
+        
+        $this->app->bind(
+            'Modules\User\Repositories\UserRepository',
+            "Modules\\User\\Repositories\\{$driver}\\{$driver}UserRepository"
+        );
 
-	/**
-	 * Register views.
-	 * 
-	 * @return void
-	 */
-	public function registerViews()
-	{
-		$viewPath = base_path('resources/views/modules/user');
+        $this->app->bind(
+            'Modules\User\Repositories\RoleRepository',
+            "Modules\\User\\Repositories\\{$driver}\\{$driver}RoleRepository"
+        );
+        $this->app->bind(
+            'Modules\Core\Contracts\Authentication',
+            "Modules\\User\\Repositories\\{$driver}\\{$driver}Authentication"
+        );
+    }
+    
+    private function registerMiddleware($router)
+    {
+        foreach ($this->middleware as $module => $middlewares) {
+            foreach ($middlewares as $name => $middleware) {
+                $class = "Modules\\{$module}\\Http\\Middleware\\{$middleware}";
 
-		$sourcePath = __DIR__.'/../Resources/views';
+                $router->middleware($name, $class);
+            }
+        }
+    }
+    
+    private function getUserPackageServiceProvider()
+    {
+        $driver = config('jh.user.users.driver', 'Sentinel');
 
-		$this->publishes([
-			$sourcePath => $viewPath
-		]);
+        if (!isset($this->providers[$driver])) {
+            throw new \Exception("Driver [{$driver}] does not exist");
+        }
 
-		$this->loadViewsFrom([$viewPath, $sourcePath], 'user');
-	}
-
-	/**
-	 * Register translations.
-	 * 
-	 * @return void
-	 */
-	public function registerTranslations()
-	{
-		$langPath = base_path('resources/lang/modules/user');
-
-		if (is_dir($langPath)) {
-			$this->loadTranslationsFrom($langPath, 'user');
-		} else {
-			$this->loadTranslationsFrom(__DIR__ .'/../Resources/lang', 'user');
-		}
-	}
-
-	/**
-	 * Get the services provided by the provider.
-	 *
-	 * @return array
-	 */
-	public function provides()
-	{
-		return array();
-	}
-
+        return $this->providers[$driver];
+    }
 }
