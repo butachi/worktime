@@ -6,9 +6,12 @@
     "active": 1,
     "order": 0,
     "providers": [
-        "Modules\\Core\\Providers\\CoreServiceProvider"
+        "Modules\\Core\\Providers\\CoreServiceProvider",
+        "Mcamara\\LaravelLocalization\\LaravelLocalizationServiceProvider"
     ],
-    "aliases":{},
+    "aliases":{
+        "LaravelLocalization": "Mcamara\\LaravelLocalization\\Facades\\LaravelLocalization"
+    },
     "files": [
         "start.php"
     ]

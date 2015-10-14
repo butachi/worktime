@@ -3,6 +3,8 @@
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
 abstract class RouteServiceProvider extends ServiceProvider
 {
     /**
@@ -66,7 +68,7 @@ abstract class RouteServiceProvider extends ServiceProvider
         $frontend = $this->getFrontendRoute();
 
         if ($frontend && file_exists($frontend)) {
-            $router->group(['middleware' => config('asgard.core.core.middleware.frontend', [])], function (Router $router) use ($frontend) {
+            $router->group(['middleware' => config('jh.core.core.middleware.frontend', [])], function (Router $router) use ($frontend) {
                 require $frontend;
             });
         }
@@ -80,7 +82,7 @@ abstract class RouteServiceProvider extends ServiceProvider
         $backend = $this->getBackendRoute();
 
         if ($backend && file_exists($backend)) {
-            $router->group(['namespace' => 'Admin', 'prefix' => config('asgard.core.core.admin-prefix'), 'middleware' => config('asgard.core.core.middleware.backend', [])], function (Router $router) use ($backend) {
+            $router->group(['namespace' => 'Admin', 'prefix' => config('jh.core.core.admin-prefix'), 'middleware' => config('asgard.core.core.middleware.backend', [])], function (Router $router) use ($backend) {
                 require $backend;
             });
         }
@@ -94,7 +96,7 @@ abstract class RouteServiceProvider extends ServiceProvider
         $api = $this->getApiRoute();
 
         if ($api && file_exists($api)) {
-            $router->group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => config('asgard.core.core.middleware.api', [])], function (Router $router) use ($api) {
+            $router->group(['namespace' => 'Api', 'prefix' => 'api', 'middleware' => config('jh.core.core.middleware.api', [])], function (Router $router) use ($api) {
                 require $api;
             });
         }

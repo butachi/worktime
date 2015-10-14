@@ -1,6 +1,14 @@
 <?php
 
-Route::group(['prefix' => 'core', 'namespace' => 'Modules\Core\Http\Controllers'], function()
-{
-	Route::get('/', 'CoreController@index');
-});
+/*
+|--------------------------------------------------------------------------
+| Language Settings
+|--------------------------------------------------------------------------
+*/
+$lang = null;
+
+if (App::environment() == 'testing') {
+    $lang = 'fr';
+}
+
+LaravelLocalization::setLocale($lang);
