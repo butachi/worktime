@@ -9,11 +9,26 @@
     <div class="register-box-body">
         <p class="login-box-msg">{{ trans('user::auth.register') }}</p>
         <form action="{{ route('register.post') }}" method="post">
+            @if (count($errors) > 0)
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            @endif
             <input type="hidden" name="_token" value="{{ csrf_Token() }}" >
-            <div class="form-group has-feedback">
-                <input type="text" name="full_name" class="form-control" placeholder="{{ trans('user::auth.fullname') }}">
-                <span class="glyphicon glyphicon-user form-control-feedback"></span>
-            </div>
+            <div class="row"> 
+                <div class="col-xs-6">
+                    <div class="form-group has-feedback">
+                        <input type="text" name="first_name" class="form-control" placeholder="{{ trans('user::auth.first name') }}">                        
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group has-feedback">
+                        <input type="text" name="last_name" class="form-control" placeholder="{{ trans('user::auth.last name') }}">                        
+                    </div>
+                </div>
+            </div>                        
             <div class="form-group has-feedback">
                 <input type="email" name="email" class="form-control" placeholder="{{ trans('user::auth.email') }}">
                 <span class="glyphicon glyphicon-envelope form-control-feedback"></span>

@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Pingpong\Modules\Routing\Controller;
+use Modules\User\Entities\User;
+use Modules\User\Http\Requests\RegisterRequest;
 
 class AuthController extends Controller
 {
@@ -18,7 +20,6 @@ class AuthController extends Controller
     
     public function postLogin()
     {
-        
     }
     
     public function getReset()
@@ -28,7 +29,6 @@ class AuthController extends Controller
     
     public function postReset()
     {
-        
     }
     
     public function getRegister()
@@ -36,9 +36,13 @@ class AuthController extends Controller
         return view('user::public.register');
     }
     
-    public function postRegister(Request $request)
+    public function postRegister(RegisterRequest $request)
     {
-        print_r($request->all());
-        return 'post register';
+        $input = $request->all();
+        
+        
+        User::create($input);
+        
+        return $input;
     }
 }
