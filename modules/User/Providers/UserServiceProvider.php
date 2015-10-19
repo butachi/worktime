@@ -43,7 +43,7 @@ class UserServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind('Modules\Core\Contracts\Authentication', 'Modules\User\Repositories\Jh\JhAuthentication');
     }
 
     /**
