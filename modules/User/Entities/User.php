@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class User extends Model implements UserInterface
 {
     protected $table = 'users';
     
@@ -17,10 +17,5 @@ class User extends Model
     public function post()
     {
         return $this->hasMany('Modules\Product\Entities\Product');
-    }
-
-    public function scopeAddToPermission($query)
-    {
-        
     }
 }
