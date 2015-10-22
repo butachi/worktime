@@ -47,8 +47,7 @@ class JhAuthentication implements Authentication
         if ($this->user !== null) {
             return $this->user;
         }
-        //get code of persistences
-        var_dump(!$this->persistences->check());die;
+        //get code of persistences        
         if (! $code = $this->persistences->check()) {
             return false;
         }

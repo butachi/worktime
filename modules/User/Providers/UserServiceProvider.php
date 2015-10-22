@@ -1,6 +1,7 @@
-<?php namespace modules\User\Providers;
+<?php namespace Modules\User\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Modules\User\Repositories\User\EloquentUser;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -42,7 +43,10 @@ class UserServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {
+    {        
+        $this->app->singleton('Modules\User\Repositories\User\UserRepository', function($app) {
+            return new EloquentUser();
+        });
         $this->app->bind('Modules\Core\Contracts\Authentication', 'Modules\User\Repositories\Jh\JhAuthentication');
     }
 

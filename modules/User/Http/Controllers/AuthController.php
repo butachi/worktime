@@ -1,24 +1,25 @@
-<?php namespace modules\User\Http\Controllers;
+<?php namespace Modules\User\Http\Controllers;
 
 use Modules\Core\Http\Controllers\PublicController;
-use Modules\User\Entities\User;
 use Modules\User\Http\Requests\RegisterRequest;
+use Modules\User\Repositories\User\UserRepository;
 
 class AuthController extends PublicController
 {
+    protected $users;
+    
+    public function __construct(UserRepository $user) {
+        parent::__construct();
+        $this->users = $user;
+    }
+
     public function index()
     {
         return view('user::index');
     }
     
     public function getLogin()
-    {
-        $users = User::find(1);
-        
-        foreach ($users->roles as $role) {
-            echo $role->pivot->user_id;
-        }
-        return $users->roles;
+    {        
         return view('user::public.login');
     }
     
@@ -38,6 +39,7 @@ class AuthController extends PublicController
     
     public function getRegister()
     {
+        return $this->users->get();
         return view('user::public.register');
     }
     
