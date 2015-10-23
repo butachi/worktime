@@ -18,4 +18,9 @@ class User extends Model implements UserInterface
     {
         return $this->hasMany('Modules\Product\Entities\Product');
     }
+    
+    public function abd()
+    {
+        
+    }
 }
