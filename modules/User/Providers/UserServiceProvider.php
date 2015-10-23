@@ -1,8 +1,7 @@
 <?php namespace modules\User\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Modules\User\Repositories\User\EloquentUser;
-use Modules\User\Classes\Jhawaii;
+use Modules\User\Services\Jhawaii;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -44,7 +43,9 @@ class UserServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerMiddleware($this->app['router']);
-        $this->registerUser();
+        $this->registerPersistence();
+        $this->registerUsers();
+        $this->registerRoles();
         $this->registerJhawaii();
         $this->app->bind('Modules\Core\Contracts\Authentication', 'Modules\User\Repositories\Jhawaii\JhawaiiAuthentication');
     }
@@ -60,21 +61,63 @@ class UserServiceProvider extends ServiceProvider
         }
     }
     
-    public function registerUser()
+    public function registerPersistence()
     {
-        $this->app->singleton('Modules\User\Repositories\User\UserRepository', function ($app) {
-            return new EloquentUser();
+        $this->registerSession();
+        $this->registerCookie();
+        
+        $this->app->singleton('Modules\User\Repositories\Persistences\PersistenceRepositoryInterface', function ($app) {
+            return new \Modules\User\Repositories\Persistences\PersistenceRepository(
+                    $app['Modules\User\Repositories\Sessions\SessionRepositoryInterface'],
+                    $app['Modules\User\Repositories\Cookies\CookieRepositoryInterface']
+            );
+        });
+    }
+    
+    public function registerSession()
+    {
+        $this->app->singleton('Modules\User\Repositories\Sessions\SessionRepositoryInterface', function ($app) {
+            $key = $app['config']->get('session.cookie');
+            return new \Modules\User\Repositories\Sessions\SessionRepository($app['session.store'], $key);
+        });
+    }
+    
+    public function registerCookie()
+    {
+        $this->app->singleton('Modules\User\Repositories\Cookies\CookieRepositoryInterface', function ($app) {
+            $key = $app['config']->get('cookies');
+            return new \Modules\User\Repositories\Cookies\CookieRepository($app['request'], $app['cookie'], $key);
+        });
+    }
+    
+    public function registerUsers()
+    {
+        $this->app->singleton('Modules\User\Repositories\Users\UserRepositoryInterface', function ($app) {
+            return new \Modules\User\Repositories\Users\UserRepository(
+                    $app['Modules\User\Repositories\Users\EloquentUser'], 
+                    $app['events']
+            );
         });
     }
     
     public function registerJhawaii()
     {
         //register jhawaii
-        $this->app->singleton('jhawaii', function () {
-            return new Jhawaii();
+        $this->app->singleton('jhawaii', function ($app) {
+            return new Jhawaii(
+                $app['Modules\User\Repositories\Users\UserRepositoryInterface'],
+                $app['Modules\User\Repositories\Persistences\PersistenceRepositoryInterface']
+            );
         });
         
         $this->app->alias('Jhawaii', 'Modules\User\Facades\Jhawaii');
+    }
+    
+    public function registerRoles()
+    {
+        $this->app->singleton('Modules\User\Repositories\Roles\RoleRepositoryInterface', function() {
+            return new \Modules\User\Repositories\Roles\RoleRepository();
+        });
     }
 
     /**
@@ -84,6 +127,6 @@ class UserServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return [];        
+        return [];
     }
 }

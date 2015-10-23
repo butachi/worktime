@@ -4,7 +4,7 @@ interface Authentication
 {
     public function login();
     
-    public function register();
+    public function register(array $user);
     
     public function active();
     

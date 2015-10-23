@@ -1,17 +1,17 @@
-<?php namespace Modules\User\Http\Controllers;
+<?php namespace modules\User\Http\Controllers;
 
 use Modules\Core\Http\Controllers\PublicController;
 use Modules\User\Http\Requests\RegisterRequest;
 
 class AuthController extends PublicController
-{    
+{
     public function index()
     {
         return view('user::index');
     }
     
     public function getLogin()
-    {        
+    {
         return view('user::public.login');
     }
     
@@ -30,15 +30,15 @@ class AuthController extends PublicController
     }
     
     public function getRegister()
-    {     
-        return $this->auth->register();
-        //return view('user::public.register');
+    {
+        return view('user::public.register');
     }
     
     public function postRegister(RegisterRequest $request)
     {
         app('Modules\User\Services\UserRegistration')->register($request->all());
-        
+        return redirect()->route('register');
+        /*
         $input = $request->all();
         $input['password'] = Hash::make($input['password']);
         
@@ -46,5 +46,7 @@ class AuthController extends PublicController
         print_r($user);
         die;
         return $input;
+        * 
+        */
     }
 }
