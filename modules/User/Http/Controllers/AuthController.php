@@ -2,17 +2,9 @@
 
 use Modules\Core\Http\Controllers\PublicController;
 use Modules\User\Http\Requests\RegisterRequest;
-use Modules\User\Repositories\User\UserRepository;
 
 class AuthController extends PublicController
-{
-    protected $users;
-    
-    public function __construct(UserRepository $user) {
-        parent::__construct();
-        $this->users = $user;
-    }
-
+{    
     public function index()
     {
         return view('user::index');
@@ -38,9 +30,9 @@ class AuthController extends PublicController
     }
     
     public function getRegister()
-    {
-        return $this->users->get();
-        return view('user::public.register');
+    {     
+        return $this->auth->register();
+        //return view('user::public.register');
     }
     
     public function postRegister(RegisterRequest $request)

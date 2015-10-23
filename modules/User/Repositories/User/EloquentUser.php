@@ -1,11 +1,11 @@
 <?php namespace Modules\User\Repositories\User;
 
-use Modules\User\Entities\User as User;
+use Illuminate\Database\Eloquent\Model;
 
-class EloquentUser implements UserRepository
+class EloquentUser extends Model implements UserRepository
 {
     public function get()
-    {
+    {        
         return (User::with('roles')->get());
     }
 }

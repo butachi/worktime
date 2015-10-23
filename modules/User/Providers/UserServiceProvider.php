@@ -1,7 +1,8 @@
-<?php namespace Modules\User\Providers;
+<?php namespace modules\User\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Modules\User\Repositories\User\EloquentUser;
+use Modules\User\Classes\Jhawaii;
 
 class UserServiceProvider extends ServiceProvider
 {
@@ -28,8 +29,6 @@ class UserServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerMiddleware($this->app['router']);
-        
         $this->publishes([
             __DIR__ . '/../Resources/views' => base_path('resources/views/jh/user'),
         ]);
@@ -43,23 +42,13 @@ class UserServiceProvider extends ServiceProvider
      * @return void
      */
     public function register()
-    {        
-        $this->app->singleton('Modules\User\Repositories\User\UserRepository', function($app) {
-            return new EloquentUser();
-        });
-        $this->app->bind('Modules\Core\Contracts\Authentication', 'Modules\User\Repositories\Jh\JhAuthentication');
+    {
+        $this->registerMiddleware($this->app['router']);
+        $this->registerUser();
+        $this->registerJhawaii();
+        $this->app->bind('Modules\Core\Contracts\Authentication', 'Modules\User\Repositories\Jhawaii\JhawaiiAuthentication');
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return array();
-    }
-    
     private function registerMiddleware($router)
     {
         foreach ($this->middleware as $module => $middlewares) {
@@ -69,5 +58,32 @@ class UserServiceProvider extends ServiceProvider
                 $router->middleware($name, $class);
             }
         }
+    }
+    
+    public function registerUser()
+    {
+        $this->app->singleton('Modules\User\Repositories\User\UserRepository', function ($app) {
+            return new EloquentUser();
+        });
+    }
+    
+    public function registerJhawaii()
+    {
+        //register jhawaii
+        $this->app->singleton('jhawaii', function () {
+            return new Jhawaii();
+        });
+        
+        $this->app->alias('Jhawaii', 'Modules\User\Facades\Jhawaii');
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return [];        
     }
 }

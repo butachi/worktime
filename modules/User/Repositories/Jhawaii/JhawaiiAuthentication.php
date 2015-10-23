@@ -1,10 +1,11 @@
-<?php namespace modules\User\Repositories\Jh;
+<?php namespace Modules\User\Repositories\Jhawaii;
 
 use Modules\Core\Contracts\Authentication;
-use Modules\User\Entities\User;
+use Modules\User\Facades\Jhawaii;
+use Modules\User\Repositories\User\UserRepository;
 use Modules\User\Entities\Persistences;
 
-class JhAuthentication implements Authentication
+class JhawaiiAuthentication implements Authentication
 {
     protected $user;
     
@@ -14,9 +15,9 @@ class JhAuthentication implements Authentication
 
 
     public function __construct(
-            User $users,
+            UserRepository $users,
             Persistences $persistences
-    ) {
+    ) {        
         $this->users = $users;
         $this->persistences = $persistences;
     }
@@ -26,7 +27,9 @@ class JhAuthentication implements Authentication
     }
     
     public function register()
-    {
+    {       
+        return Jhawaii::get();
+        //return $this->users->get();
     }
     
     public function active()
