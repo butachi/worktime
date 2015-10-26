@@ -2,7 +2,13 @@
 
 interface Authentication
 {
-    public function login();
+    /**
+     * Authenticate a user
+     * @param array $credentials
+     * @param bool $remember        Remember user
+     * @return mixed
+     */
+    public function login(array $credentials, $remember = false);
     
     public function register(array $user);
     

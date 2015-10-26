@@ -1,6 +1,7 @@
 <?php namespace modules\User\Http\Controllers;
 
 use Modules\Core\Http\Controllers\PublicController;
+use Modules\User\Http\Requests\LoginRequest;
 use Modules\User\Http\Requests\RegisterRequest;
 
 class AuthController extends PublicController
@@ -14,10 +15,16 @@ class AuthController extends PublicController
     {
         return view('user::public.login');
     }
-    
-    
-    public function postLogin()
+
+    public function postLogin(LoginRequest $request)
     {
+        $credentials = [
+            'email' => $request->email,
+            'password' => $request->password,
+        ];
+        $remember = (bool) $request->get('remember_me', false);
+        $error = $this->auth->login($credentials, $remember);
+        var_dump('login',$error);die;
     }
     
     public function getReset()

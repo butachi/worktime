@@ -5,8 +5,24 @@ use Modules\User\Facades\Jhawaii;
 
 class JhawaiiAuthentication implements Authentication
 {
-    public function login()
+    /**
+     * Authenticate a user
+     * @param array $credentials
+     * @param bool $remember    Remember user
+     * @return mixed
+     */
+    public function login(array $credentials, $remember = false)
     {
+        try {
+            if (Jhawaii::authenticate($credentials, $remember)) {
+                return false;
+            }
+        } catch (NotActivatedException $e) {
+            return 'Account not yet validated. Please check your email.';
+        } catch (ThrottlingException $e) {
+            $delay = $e->getDelay();
+            return "Your account is blocked for {$delay} second(s).";
+        }
     }
     
     public function register(array $user)
