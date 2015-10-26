@@ -37,16 +37,7 @@ class AuthController extends PublicController
     public function postRegister(RegisterRequest $request)
     {
         app('Modules\User\Services\UserRegistration')->register($request->all());
-        return redirect()->route('register');
-        /*
-        $input = $request->all();
-        $input['password'] = Hash::make($input['password']);
-        
-        $user = User::create($input);
-        print_r($user);
-        die;
-        return $input;
-        * 
-        */
+        \Session::flash('flash_msg', trans('user::messages.account created check email for activation'));
+        return redirect()->route('register');        
     }
 }

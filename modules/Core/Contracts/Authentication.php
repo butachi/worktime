@@ -8,7 +8,13 @@ interface Authentication
     
     public function active();
     
-    public function assignRole();
+    /**
+     * Assign a role to the given user
+     * @param \Modules\User\Repositories\Users\UserRepository $user
+     * @param \Modules\User\Repositories\Roles\RoleRepository $role
+     * @return mixed
+     */
+    public function assignRole($user, $role);
     
     public function logout();
     

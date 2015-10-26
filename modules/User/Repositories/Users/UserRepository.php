@@ -16,9 +16,13 @@ class UserRepository implements UserRepositoryInterface
     
     public function create(array $credentials)
     {                        
+        $this->dispatcher->fire('sentinel.user.creating', compact('user', 'credentials'));
+        
         $this->fill($credentials);
         
         $this->model->save();
+        
+        $this->dispatcher->fire('sentinel.user.creating', compact('user', 'credentials'));
         
         return $this->model;
     }

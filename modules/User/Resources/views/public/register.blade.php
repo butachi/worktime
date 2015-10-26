@@ -8,6 +8,11 @@
 <div class="register-box">    
     <div class="register-box-body">
         <p class="login-box-msg">{{ trans('user::auth.register') }}</p>
+        @if(Session::has('flash_msg'))
+        <div class="alert alert-success">
+            {{ Session::get('flash_msg') }}
+        </div>
+        @endif
         <form action="{{ route('register.post') }}" method="post">
             @if (count($errors) > 0)
             <ul>

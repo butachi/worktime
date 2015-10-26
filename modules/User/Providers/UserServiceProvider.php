@@ -115,8 +115,10 @@ class UserServiceProvider extends ServiceProvider
     
     public function registerRoles()
     {
-        $this->app->singleton('Modules\User\Repositories\Roles\RoleRepositoryInterface', function() {
-            return new \Modules\User\Repositories\Roles\RoleRepository();
+        $this->app->singleton('Modules\User\Repositories\Roles\RoleRepositoryInterface', function($app) {
+            return new \Modules\User\Repositories\Roles\RoleRepository(
+                    $app['Modules\User\Repositories\Roles\EloquentRole']
+            );
         });
     }
 
