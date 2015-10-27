@@ -19,3 +19,5 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
     # Logout
     $router->get('logout', array('as' => 'logout', 'uses' => 'AuthController@getLogout'));
 });
+
+$router->get('/', ['uses' => 'PublicController@homepage', 'as' => 'homepage']);

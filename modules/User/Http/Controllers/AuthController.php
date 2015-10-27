@@ -1,5 +1,6 @@
-<?php namespace modules\User\Http\Controllers;
+<?php namespace Modules\User\Http\Controllers;
 
+use Laracasts\Flash\Flash;
 use Modules\Core\Http\Controllers\PublicController;
 use Modules\User\Http\Requests\LoginRequest;
 use Modules\User\Http\Requests\RegisterRequest;
@@ -24,7 +25,14 @@ class AuthController extends PublicController
         ];
         $remember = (bool) $request->get('remember_me', false);
         $error = $this->auth->login($credentials, $remember);
-        var_dump('login',$error);die;
+        if (!$error) {
+            Flash::success(trans('user::messages.successfully logged in'));
+
+            return redirect()->intended('/');
+        }
+        Flash::error($error);
+
+        return redirect()->back()->withInput();
     }
     
     public function getReset()
@@ -44,7 +52,7 @@ class AuthController extends PublicController
     public function postRegister(RegisterRequest $request)
     {
         app('Modules\User\Services\UserRegistration')->register($request->all());
-        \Session::flash('flash_msg', trans('user::messages.account created check email for activation'));
+        Flash::success(trans('user::messages.account created check email for activation'));
         return redirect()->route('register');        
     }
 }

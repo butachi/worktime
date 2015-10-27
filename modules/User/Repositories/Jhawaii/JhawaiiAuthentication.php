@@ -53,7 +53,7 @@ class JhawaiiAuthentication implements Authentication
     
     public function check()
     {
-        Jhawaii::check();
+        return Jhawaii::check();
     }
     
     public function id()

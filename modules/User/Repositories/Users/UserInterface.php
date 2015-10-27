@@ -1,4 +1,4 @@
-<?php namespace Modues\User\Repositories\Users;
+<?php namespace Modules\User\Repositories\Users;
 
 interface UserInterface
 {

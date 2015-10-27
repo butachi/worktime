@@ -1,6 +1,7 @@
 <?php namespace Modules\User\Repositories\Users;
 
 use Hash;
+use Carbon\Carbon;
 use Illuminate\Events\Dispatcher;
 
 class UserRepository implements UserRepositoryInterface
@@ -9,13 +10,43 @@ class UserRepository implements UserRepositoryInterface
     
     private $dispatcher;
     
-    public function __construct($model = null, Dispatcher $dispatcher = null) {        
+    public function __construct($model = null, Dispatcher $dispatcher = null)
+    {
         $this->model = $model;
         $this->dispatcher = $dispatcher;
     }
     
+    /**
+     * {@inheritDoc}
+     */
+    public function findByCredentials(array $credentials)
+    {
+        if (empty($credentials)) {
+            return;
+        }
+
+        $loginNames = $this->model->getLoginNames();
+        
+        list($logins, $password, $credentials) = $this->parseCredentials($credentials, $loginNames);
+
+        $query = $this->model->newQuery();
+
+        if (is_array($logins)) {
+            foreach ($logins as $key => $value) {
+                $query->where($key, $value);
+            }
+        } else {
+            $query->whereNested(function ($query) use ($loginNames, $logins) {
+                foreach ($loginNames as $name) {
+                    $query->orWhere($name, $logins);
+                }
+            });
+        }
+        return $query->first();
+    }
+    
     public function create(array $credentials)
-    {                        
+    {
         $this->dispatcher->fire('sentinel.user.creating', compact('user', 'credentials'));
         
         $this->fill($credentials);
@@ -26,9 +57,27 @@ class UserRepository implements UserRepositoryInterface
         
         return $this->model;
     }
-        
-    public function fill(array $credentials)
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function validateCredentials(UserInterface $user, array $credentials)
     {        
+        return Hash::check($credentials['password'], $user->password);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    public function recordLogin(UserInterface $user)
+    {
+        $user->last_login = Carbon::now();
+        
+        return $user->save() ? $user : false;
+    }
+    
+    protected function fill(array $credentials)
+    {
         $this->dispatcher->fire('jhawai.user.filling', compact('user', 'credentials'));
 
         $loginNames = $this->model->getLoginNames();
@@ -47,7 +96,7 @@ class UserRepository implements UserRepositoryInterface
 
         $this->model->fill($attributes);
 
-        if (isset($password)) {            
+        if (isset($password)) {
             $password = Hash::make($password);
 
             $this->model->fill(compact('password'));
@@ -85,4 +134,3 @@ class UserRepository implements UserRepositoryInterface
         return [$logins, $password, $credentials];
     }
 }
-

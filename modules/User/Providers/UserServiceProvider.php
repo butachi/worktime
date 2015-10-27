@@ -69,7 +69,8 @@ class UserServiceProvider extends ServiceProvider
         $this->app->singleton('Modules\User\Repositories\Persistences\PersistenceRepositoryInterface', function ($app) {
             return new \Modules\User\Repositories\Persistences\PersistenceRepository(
                     $app['Modules\User\Repositories\Sessions\SessionRepositoryInterface'],
-                    $app['Modules\User\Repositories\Cookies\CookieRepositoryInterface']
+                    $app['Modules\User\Repositories\Cookies\CookieRepositoryInterface'],
+                    $app['Modules\User\Repositories\Persistences\EloquentPersistence']
             );
         });
     }
@@ -106,7 +107,8 @@ class UserServiceProvider extends ServiceProvider
         $this->app->singleton('jhawaii', function ($app) {
             return new Jhawaii(
                 $app['Modules\User\Repositories\Users\UserRepositoryInterface'],
-                $app['Modules\User\Repositories\Persistences\PersistenceRepositoryInterface']
+                $app['Modules\User\Repositories\Persistences\PersistenceRepositoryInterface'],
+                $app['events']
             );
         });
         

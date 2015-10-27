@@ -7,10 +7,12 @@
     "order": 0,
     "providers": [
         "Modules\\Core\\Providers\\CoreServiceProvider",
-        "Mcamara\\LaravelLocalization\\LaravelLocalizationServiceProvider"
+        "Mcamara\\LaravelLocalization\\LaravelLocalizationServiceProvider",
+        "Laracasts\\Flash\\FlashServiceProvider"
     ],
     "aliases":{
-        "LaravelLocalization": "Mcamara\\LaravelLocalization\\Facades\\LaravelLocalization"
+        "LaravelLocalization": "Mcamara\\LaravelLocalization\\Facades\\LaravelLocalization",
+        "Flash": "Laracasts\\Flash\\Flash"
     },
     "files": [
         "start.php"
