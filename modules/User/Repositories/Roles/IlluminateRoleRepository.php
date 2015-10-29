@@ -1,6 +1,6 @@
 <?php namespace Modules\User\Repositories\Roles;
 
-class RoleRepository implements RoleRepositoryInterface
+class IlluminateRoleRepository implements RoleRepositoryInterface
 {
     protected $model;
     
@@ -22,5 +22,16 @@ class RoleRepository implements RoleRepositoryInterface
     
     public function findBySlug($slug) {
         
+    }
+
+    public function getModule()
+    {
+        return $this->model;
+    }
+
+    public function setModule($model)
+    {
+        $this->model = $model;
+        return $this;
     }
 }

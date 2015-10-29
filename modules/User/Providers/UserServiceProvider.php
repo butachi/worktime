@@ -47,7 +47,25 @@ class UserServiceProvider extends ServiceProvider
         $this->registerUsers();
         $this->registerRoles();
         $this->registerJhawaii();
-        $this->app->bind('Modules\Core\Contracts\Authentication', 'Modules\User\Repositories\Jhawaii\JhawaiiAuthentication');
+        $this->registerBindings();
+    }
+
+    public function registerBindings()
+    {
+        $this->app->bind(
+            'Modules\User\Repositories\UserRepository',
+            'Modules\User\Repositories\Jhawaii\JhawaiiUserRepository'
+        );
+
+        $this->app->bind(
+            'Modules\User\Repositories\RoleRepository',
+            'Modules\User\Repositories\Jhawaii\JhawaiiRoleRepository'
+        );
+
+        $this->app->bind(
+            'Modules\Core\Contracts\Authentication',
+            'Modules\User\Repositories\Jhawaii\JhawaiiAuthentication'
+        );
     }
 
     private function registerMiddleware($router)
@@ -94,7 +112,7 @@ class UserServiceProvider extends ServiceProvider
     public function registerUsers()
     {
         $this->app->singleton('Modules\User\Repositories\Users\UserRepositoryInterface', function ($app) {
-            return new \Modules\User\Repositories\Users\UserRepository(
+            return new \Modules\User\Repositories\Users\IlluminateUserRepository(
                     $app['Modules\User\Repositories\Users\EloquentUser'], 
                     $app['events']
             );
@@ -107,6 +125,7 @@ class UserServiceProvider extends ServiceProvider
         $this->app->singleton('jhawaii', function ($app) {
             return new Jhawaii(
                 $app['Modules\User\Repositories\Users\UserRepositoryInterface'],
+                $app['Modules\User\Repositories\Roles\RoleRepositoryInterface'],
                 $app['Modules\User\Repositories\Persistences\PersistenceRepositoryInterface'],
                 $app['events']
             );
@@ -118,7 +137,7 @@ class UserServiceProvider extends ServiceProvider
     public function registerRoles()
     {
         $this->app->singleton('Modules\User\Repositories\Roles\RoleRepositoryInterface', function($app) {
-            return new \Modules\User\Repositories\Roles\RoleRepository(
+            return new \Modules\User\Repositories\Roles\IlluminateRoleRepository(
                     $app['Modules\User\Repositories\Roles\EloquentRole']
             );
         });

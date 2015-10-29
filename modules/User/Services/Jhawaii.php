@@ -1,5 +1,6 @@
 <?php namespace modules\User\Services;
 
+use Modules\User\Repositories\Roles\RoleRepositoryInterface;
 use Modules\User\Repositories\Users\UserRepositoryInterface;
 use Modules\User\Repositories\Users\UserInterface;
 use Modules\User\Repositories\Persistences\PersistenceRepositoryInterface;
@@ -10,7 +11,9 @@ class Jhawaii
     protected $user;
  
     protected $users;
-    
+
+    protected $roles;
+
     protected $persistences;
     
     protected $dispatcher;
@@ -31,10 +34,12 @@ class Jhawaii
 
     public function __construct(
         UserRepositoryInterface $users,
+        RoleRepositoryInterface $roles,
         PersistenceRepositoryInterface $persistence,
         Dispatcher $dispatcher = null
     ) {
         $this->users = $users;
+        $this->roles = $roles;
         $this->persistences = $persistence;
         $this->dispatcher   = $dispatcher;
     }
@@ -108,6 +113,11 @@ class Jhawaii
     public function getUserRepository()
     {
         return $this->users;
+    }
+
+    public function getRoleRepository()
+    {
+        return $this->roles;
     }
     
     /**

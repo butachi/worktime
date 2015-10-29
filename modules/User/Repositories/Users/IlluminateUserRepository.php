@@ -4,7 +4,7 @@ use Hash;
 use Carbon\Carbon;
 use Illuminate\Events\Dispatcher;
 
-class UserRepository implements UserRepositoryInterface
+class IlluminateUserRepository implements UserRepositoryInterface
 {
     private $model;
     
@@ -75,7 +75,19 @@ class UserRepository implements UserRepositoryInterface
         
         return $user->save() ? $user : false;
     }
-    
+
+    public function getModule()
+    {
+        return $this->model;
+    }
+
+    public function setModule($module)
+    {
+        $this->model = $module;
+
+        return $this;
+    }
+
     protected function fill(array $credentials)
     {
         $this->dispatcher->fire('jhawai.user.filling', compact('user', 'credentials'));
