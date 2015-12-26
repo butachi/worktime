@@ -1,5 +1,4 @@
 <?php
-
 $router->group(['prefix' => '/user'], function () {
     get('users', ['as' => 'admin.user.user.index', 'uses' => 'UserController@index']);
     get('users/create', ['as' => 'admin.user.user.create', 'uses' => 'UserController@create']);

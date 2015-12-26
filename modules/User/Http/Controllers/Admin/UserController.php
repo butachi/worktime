@@ -51,7 +51,7 @@ class UserController extends BaseUserController {
     {
         $users = $this->user->all();
         $currentUser = $this->auth->check();
-        
+
         return view('user::admin.users.index', compact($users, $currentUser));
     }
 }

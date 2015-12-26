@@ -50,6 +50,7 @@ class CoreServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->registerServices();
     }
     /**
      * Get the services provided by the provider.
@@ -76,7 +77,16 @@ class CoreServiceProvider extends ServiceProvider
             }
         }
     }
-    
+
+    private function registerServices()
+    {
+        $this->app->bindShared('Modules\Core\Foundation\Theme\ThemeManager', function ($app) {
+            $path = $app['config']->get('core.themes_path');
+
+            return new ThemeManager($app, $path);
+        });
+    }
+
     /**
      * Register the modules aliases
      */

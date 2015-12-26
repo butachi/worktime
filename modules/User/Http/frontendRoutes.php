@@ -20,4 +20,4 @@ $router->group(['prefix' => 'auth'], function (Router $router) {
     $router->get('logout', array('as' => 'logout', 'uses' => 'AuthController@getLogout'));
 });
 
-$router->get('/', ['uses' => 'PublicController@homepage', 'as' => 'homepage']);
+//$router->get('/', ['uses' => 'PublicController@homepage', 'as' => 'homepage']);

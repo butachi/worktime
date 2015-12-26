@@ -3,7 +3,7 @@
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\App;
 
-abstract class PublicController extends Controller
+abstract class BasePublicController extends Controller
 {
     protected $auth;
     public $locale;
@@ -13,6 +13,7 @@ abstract class PublicController extends Controller
     {
         $this->locale = App::getLocale();
         $this->auth = app('Modules\Core\Contracts\Authentication');
+
         view()->share('currentUser', $this->auth->check());
     }
 }
